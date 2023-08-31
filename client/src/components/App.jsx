@@ -1,6 +1,8 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { ethers } from 'ethers';
-import UserKeyStorage from './UserKeyStorage';
+import { Box } from '@chakra-ui/react';
+import UserStorage from './UserStorage';
+import UseKeyStorage from '../contracts/UserKeyStorage.json'
 
 function App() {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -8,7 +10,7 @@ function App() {
   return (
     <ChakraProvider>
       <Box p={5}>
-        <UserKeyStorage provider={provider} contractAddress="YOUR_CONTRACT_ADDRESS_HERE" />
+        <UserStorage provider={provider} contractAddress={UseKeyStorage.address} abi={UseKeyStorage.abi} />
       </Box>
     </ChakraProvider>
   );
