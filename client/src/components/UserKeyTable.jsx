@@ -8,11 +8,24 @@ import {
   Tr,
   Th,
   Td,
-  useToast
+  useToast,
+  Button,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  DrawerHeader,
+  DrawerBody,
+  Text,
+  HStack
 } from '@chakra-ui/react';
+import { EmailIcon } from '@chakra-ui/icons';
+import WriteMessage from './WriteMessage';
 
 function UserKeyTable({contractAddress, abi }) {
   const [users, setUsers] = useState([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const toast = useToast();
 
   useEffect(() => {
@@ -54,28 +67,69 @@ function UserKeyTable({contractAddress, abi }) {
     fetchUsers();
   }, [ contractAddress, abi, toast]);
 
+
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+    setIsDrawerOpen(true);
+  };
+
+  const handleSuccess = (tx) => {
+    setIsDrawerOpen(tx)
+  }
+
   return (
     <Box overflowX="auto" bg='ghostwhite' p={1} fontSize={'small'} border='0.5px solid silver'>
-      <Table size={'sm'} variant="simple">
-        <Thead>
-          <Tr>
+    <Table size={'sm'} variant="simple" >
+      <Thead>
+        <Tr>
           <Th>Username</Th>
-            <Th>User Address</Th>
-            
-            <Th>Encrypted Key</Th>
+          <Th>User Address</Th>
+          <Th>Public Key</Th>
+        </Tr>
+      </Thead>
+      <Tbody fontSize={'small'}>
+        {users.map((user, index) => (
+          <Tr key={index}>
+            <Td>
+              <Button 
+                leftIcon={<EmailIcon />} 
+                size={'xs'} 
+                variant={'solid'} 
+                colorScheme='twitter'
+                onClick={() => handleUserClick(user)}
+              >
+                {user.username}
+              </Button>
+            </Td>
+            <Td>{user.address}</Td>
+            <Td>{user.encryptedKey}</Td>
           </Tr>
-        </Thead>
-        <Tbody>
-          {users.map((user, index) => (
-            <Tr key={index}>
-            <Td>{user.username}</Td>
-              <Td>{user.address}</Td>
-              <Td>{user.encryptedKey}</Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-    </Box>
+        ))}
+      </Tbody>
+    </Table>
+
+    {selectedUser && (
+      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} size="sm">
+        <DrawerOverlay>
+          <DrawerContent fontSize={'small'}>
+            <DrawerCloseButton />
+            <DrawerHeader>User Details</DrawerHeader>
+
+            <DrawerBody mt={8}>
+              <Text mb={2}><strong>Username:</strong> {selectedUser.username}</Text>
+              {/*
+              <Text mb={2}><strong>Address:</strong> {selectedUser.address}</Text>
+              <HStack gap='auto'>
+              <Text mr={1}><strong>Key: </strong></Text> <Text> {selectedUser.encryptedKey}</Text>
+              </HStack>
+              */}
+              <WriteMessage onSuccess={handleSuccess} userAddress={selectedUser.address} publicKey={selectedUser.encryptedKey} />
+            </DrawerBody>
+          </DrawerContent>
+        </DrawerOverlay>
+      </Drawer>
+    )}
+  </Box>
   );
 }
 

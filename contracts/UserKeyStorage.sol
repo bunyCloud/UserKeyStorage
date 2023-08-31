@@ -5,13 +5,16 @@ contract UserKeyStorage {
     
     struct UserKeyInfo {
         address userAddress;
-        string username; // Corrected the typo "usernname" to "username"
+        string username;
         string encryptedKey;
     }
     
     UserKeyInfo[] public userKeys;
     mapping(address => string) public userToKey;
+    mapping(address => string[]) public userMessages; // Mapping to store messages for a specific userAddress
+    
     event UserAdded(address indexed userAddress, string username, string encryptedKey);
+    event MessageAdded(address indexed userAddress, string message); // Event to log the addition of a new message
     
     function addWallet(address _userAddress, string memory _username, string memory _encryptedKey) public {
         require(bytes(userToKey[_userAddress]).length == 0, "User already exists");
@@ -49,5 +52,17 @@ contract UserKeyStorage {
         }
 
         return (addresses, usernames, encryptedKeys);
+    }
+
+    // Function to add a message for a specific userAddress
+    function addMessage(address _userAddress, string memory _message) public {
+        require(bytes(userToKey[_userAddress]).length != 0, "User not found");
+        userMessages[_userAddress].push(_message);
+        emit MessageAdded(_userAddress, _message);
+    }
+
+    // Function to retrieve all messages for a specific userAddress
+    function getMessages(address _userAddress) public view returns (string[] memory) {
+        return userMessages[_userAddress];
     }
 }
