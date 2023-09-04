@@ -7,54 +7,95 @@ const NetworkSwitcherIconOnly = () => {
   const [provider, setProvider] = useState('https://testnet.telos.net/evm');
   
   const switchNetwork = async (network) => {
-    try {
-      const networkData = {
-        'Telos Mainnet': { chainId: 40, rpcUrl: 'https://mainnet.telos.net/evm' },
-        'Telos Testnet': { chainId: 41, rpcUrl: 'https://testnet.telos.net/evm' },
-        'Fuji Testnet': { chainId: 43113, rpcUrl: 'https://api.avax-test.network/ext/bc/C/rpc' },
-        'Avalanche Mainnet': { chainId: 43114, rpcUrl: 'https://api.avax.network/ext/bc/C/rpc' }
-      };
+    const networkData = {
+        'Telos Mainnet': {
+            chainId: 40,
+            rpcUrl: 'https://mainnet.telos.net/evm',
+            nativeCurrency: {
+                name: 'Telos',
+                symbol: 'TLOS',
+                decimals: 18,
+            },
+            blockExplorerUrls: ['https://telos.net'],
+        },
+        'Telos Testnet': {
+            chainId: 41,
+            rpcUrl: 'https://testnet.telos.net/evm',
+            nativeCurrency: {
+                name: 'Telos',
+                symbol: 'TLOS',
+                decimals: 18,
+            },
+            blockExplorerUrls: ['https://testnet.telos.bloks.io/'],
+        },
+        'Fuji Testnet': {
+            chainId: 43113,
+            rpcUrl: 'https://api.avax-test.network/ext/bc/C/rpc',
+            nativeCurrency: {
+                name: 'Avalanche',
+                symbol: 'AVAX',
+                decimals: 18,
+            },
+            blockExplorerUrls: ['https://cchain.explorer.avax-test.network/'],
+        },
+        'Avalanche Mainnet': {
+            chainId: 43114,
+            rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+            nativeCurrency: {
+                name: 'Avalanche',
+                symbol: 'AVAX',
+                decimals: 18,
+            },
+            blockExplorerUrls: ['https://cchain.explorer.avax.network/'],
+        },
+    };
 
-      const { chainId, rpcUrl } = networkData[network];
-      setProvider(rpcUrl);
+    const { chainId, rpcUrl, nativeCurrency, blockExplorerUrls } = networkData[network];
+    setProvider(rpcUrl);
 
-      if (!window.ethereum) {
+    if (!window.ethereum) {
         throw new Error('Metamask not installed or not accessible.');
-      }
-      const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
-      if (parseInt(currentChainId, 16) === chainId) {
+    }
+
+    const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+    if (parseInt(currentChainId, 16) === chainId) {
         console.log('Already on the desired network.');
         return;
-      }
-      await window.ethereum.request({
+    }
+
+    await window.ethereum.request({
         method: 'wallet_addEthereumChain',
         params: [
-          {
-            chainId: '0x' + chainId.toString(16),
-            chainName: network,
-            nativeCurrency: {
-              name: 'Telos',
-              symbol: 'TLOS',
-              decimals: 18,
+            {
+                chainId: '0x' + chainId.toString(16),
+                chainName: network,
+                nativeCurrency,
+                rpcUrls: [rpcUrl],
+                blockExplorerUrls,
             },
-            rpcUrls: [rpcUrl],
-            blockExplorerUrls: [/* Add the appropriate block explorer URLs based on the network */],
-          },
         ],
-      });
+    });
 
-      await window.ethereum.request({
+    await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: '0x' + chainId.toString(16) }],
-      });
-    } catch (error) {
-      console.error('Failed to switch network:', error);
-    }
-  };
+    });
+};
 
   useEffect(() => {
     switchNetwork(selectedNetwork);
   }, [selectedNetwork]);
+
+  const getModelSrc = () => {
+    switch (selectedNetwork) {
+      case 'Fuji Testnet':
+      case 'Avalanche Mainnet':
+        return '/avax.glb';
+      default:
+        return '/telos.glb';
+    }
+  };
+
 
   return (
     <Menu>
@@ -68,8 +109,8 @@ const NetworkSwitcherIconOnly = () => {
                 marginTop: '-3px',
                 backgroundColor: 'transparent',
               }}
-              src="/telos.glb"
-              poster="/telos.png"
+              src={getModelSrc()}
+              poster={selectedNetwork.includes('Testnet') ? "/telos.png" : "/avax.png"}
               shadow-intensity="0.99"
               auto-rotate={selectedNetwork === 'Telos Mainnet' ? true : false}
               shadow-softness="0.57"
