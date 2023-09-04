@@ -16,9 +16,7 @@ import {
   DrawerCloseButton,
   DrawerHeader,
   DrawerBody,
-  Text,
-  HStack
-} from '@chakra-ui/react';
+  Text} from '@chakra-ui/react';
 import { EmailIcon } from '@chakra-ui/icons';
 import WriteMessage from './WriteMessage';
 
@@ -35,7 +33,7 @@ function UserKeyTable({contractAddress, abi }) {
       if (!provider) {
         toast({
           title: "Error",
-          description: "Ethereum provider not found",
+          description: "Network provider not found",
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -78,7 +76,7 @@ function UserKeyTable({contractAddress, abi }) {
   }
 
   return (
-    <Box overflowX="auto" bg='ghostwhite' p={1} fontSize={'small'} border='0.5px solid silver'>
+    <Box overflowX="auto" bg='ghostwhite' fontSize={'small'} border='0.5px solid silver'>
     <Table size={'sm'} variant="simple" >
       <Thead>
         <Tr>
@@ -116,13 +114,8 @@ function UserKeyTable({contractAddress, abi }) {
             <DrawerHeader>User Details</DrawerHeader>
 
             <DrawerBody mt={8}>
-              <Text mb={2}><strong>Username:</strong> {selectedUser.username}</Text>
-              {/*
-              <Text mb={2}><strong>Address:</strong> {selectedUser.address}</Text>
-              <HStack gap='auto'>
-              <Text mr={1}><strong>Key: </strong></Text> <Text> {selectedUser.encryptedKey}</Text>
-              </HStack>
-              */}
+              <Text as='b' mb={2}><strong>Username:</strong> {selectedUser.username}</Text>
+
               <WriteMessage onSuccess={handleSuccess} userAddress={selectedUser.address} publicKey={selectedUser.encryptedKey} />
             </DrawerBody>
           </DrawerContent>

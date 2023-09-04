@@ -19,7 +19,7 @@ export const HeaderConnect = () => {
 
                 {!wallet.accounts.length > 0 && (
                   <>
-                  <Button w={'100%'} colorScheme='twitter'  border="1px solid white" disabled={isConnecting} onClick={connectMetaMask}>
+                  <Button w={'120px'} size={'xs'} colorScheme='twitter'  border="1px solid white" disabled={isConnecting} onClick={connectMetaMask}>
                     Connect 
                   </Button>
                   </>

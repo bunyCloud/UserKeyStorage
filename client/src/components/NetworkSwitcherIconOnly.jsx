@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Image, Text, Tooltip } from '@chakra-ui/react';
+import { Button, HStack, Image, Text, Tooltip } from '@chakra-ui/react';
 import {
     Menu,
     MenuButton,
@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 
 const NetworkSwitcherIconOnly = () => {
-  const [selectedNetwork, setSelectedNetwork] = useState('');
+  const [selectedNetwork, setSelectedNetwork] = useState('Telos Testnet');
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to keep track of whether the menu is open
 
   const switchNetwork = async (chainId) => {
@@ -96,6 +96,7 @@ const NetworkSwitcherIconOnly = () => {
 
       <Tooltip hasArrow label="Switch Network" bg="#c1cfd8" color="black">
         <MenuButton size={'auto'} bg={'transparent'} as={Button} __css={{ _hover: { boxShadow: 'none' } }}>
+          <HStack>
           <model-viewer 
             style={{
               width: '33px',
@@ -110,6 +111,8 @@ const NetworkSwitcherIconOnly = () => {
             shadow-softness="0.57"
           >
           </model-viewer>
+          <Text>{selectedNetwork.toString()}</Text>
+          </HStack>
         </MenuButton>
       </Tooltip>
       <MenuList zIndex={99999}>

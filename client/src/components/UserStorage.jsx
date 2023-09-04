@@ -1,13 +1,41 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { ethers } from 'ethers'
-import { Box, Button, Input, FormControl, FormLabel, VStack, useToast, Text, HStack } from '@chakra-ui/react'
+import { Box, Button, Input, FormControl, Center, FormLabel, VStack, useToast, Text, HStack } from '@chakra-ui/react'
 
 function UserStorage({publicKey, account, contractAddress, abi }) {
   
   const userAddress = account;
   const [username, setUsername] = useState('')
-  const toast = useToast()
+  const [userCount, setUserCount] = useState('')
+  const [msgCount, setMsgCount] = useState('')
 
+  const toast = useToast()
+  const [contractName, setContractName] = useState([])
+  
+
+
+  useEffect(() => {
+    async function fetchContractName() {
+  
+      const provider = new ethers.providers.JsonRpcProvider('https://testnet.telos.net/evm')
+      const contract = new ethers.Contract(contractAddress, abi, provider)
+      
+      try {
+        const name = await contract.contractName()
+        const users = await contract.getTotalUsers()
+        setUserCount(users.toString())
+        const msgs = await contract.messageCounter()
+        setMsgCount(msgs.toString())
+        setContractName(name)
+      } catch (error) {
+       console.log('errors not tears')
+      }
+    }
+
+    fetchContractName()
+  }, [abi, contractAddress])
+
+  
 
   const addUser = async () => {
     try {
@@ -19,7 +47,7 @@ function UserStorage({publicKey, account, contractAddress, abi }) {
     console.log(result)
     toast({
       title: 'Transaction successful',
-      description: `User added Successfully minted! Reload page to continue. Transaction hash: ${result.hash}`,
+      description: `User added successfully! Reload page to continue. Transaction hash: ${result.hash}`,
       status: 'success',
       duration: 5000,
       isClosable: true,
@@ -39,13 +67,29 @@ function UserStorage({publicKey, account, contractAddress, abi }) {
 
   return (
     <VStack spacing={4}>
-      <Box bg='ghostwhite' w="100%" mt={2} p={4} border='0.5px solid silver'>
+      <Box bg='ghostwhite' w="100%" mt={0} p={4} border='0.5px solid silver'>
       <Box  p={4} border='0.5px solid silver' bg='white'>
         <Text fontSize={'small'}>Network: Telos Testnet</Text>
         <HStack>
-        <Text fontSize={'small'}>Contract: User Storage</Text>
+        <Text fontSize={'small'}>Contract: {contractName && (<>{contractName}</>)}</Text>
         <Button variant={'link'} size={'sm'} colorScheme='twitter' href={`https://testnet.teloscan.io/address/${contractAddress}`}>View on Explorer</Button>
         </HStack>
+       <HStack>
+       <Text>
+          Users:
+        </Text>
+        <Text>
+          {userCount}
+        </Text>
+       </HStack>
+       <HStack>
+       <Text>
+          Messages:
+        </Text>
+        <Text>
+          {msgCount}
+        </Text>
+       </HStack>
         </Box>
         {publicKey && (
           <>
@@ -70,9 +114,11 @@ function UserStorage({publicKey, account, contractAddress, abi }) {
           <Input bg="white" placeholder="Enter Username" value={username} onChange={(e) => setUsername(e.target.value)} />
         </FormControl>
         
-          <Button mt={1} w="100%" colorScheme="twitter" onClick={addUser}>
+          <Center>
+          <Button maxWidth={360} mt={1} w="100%" colorScheme="twitter" onClick={addUser}>
           Add Wallet
         </Button>
+        </Center>
       </>
         )}
         
