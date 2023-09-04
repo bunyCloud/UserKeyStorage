@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
-import { Box, Text, Center, List, ListItem, useToast, FormControl, HStack, Tag } from '@chakra-ui/react'
+import { Box, Text, Center, List, ListItem, useToast, FormControl, HStack, Tag, Button } from '@chakra-ui/react'
 import UserKeyStorage from '../contracts/UserKeyStorage.json'
 import Decryptor from './Decryptor'
 import { formatAddress } from './../utils/formatMetamask'
@@ -39,6 +39,41 @@ setMessageContents(fetchedMessages);
       return updatedTexts
     })
   }
+
+  async function delMessage(msgId, index) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(contractAddress, contractABI, signer);
+    try {
+        await contract.deleteMessage(msgId);
+        const updatedMessageContents = [...messageContents];
+        updatedMessageContents.splice(index, 1); // Remove the deleted message content
+        setMessageContents(updatedMessageContents);
+
+        const updatedMsgIds = [...msgIds];
+        updatedMsgIds.splice(index, 1); // Remove the deleted message id
+        setMsgIds(updatedMsgIds);
+        
+        toast({
+            title: "Message deleted",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+        });
+    } catch (error) {
+        console.log('errors not tears');
+        toast({
+            title: "Error deleting message",
+            description: error.message || "Unknown error",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+        });
+    }
+}
+
+
+
   return (
     <Box overflowX="auto" w='auto' bg="ghostwhite" p={4} fontSize={'small'} border="0.5px solid silver">
       <FormControl>
@@ -66,6 +101,9 @@ setMessageContents(fetchedMessages);
                    # {msgIds.toString()}
                   </Text>
                 </Tag>
+                <Button size={'xs'} onClick={() => delMessage(msgIds[index], index)}>Delete</Button>
+
+
                 <Center>
                 
                   {!decryptedText[index] ? (
