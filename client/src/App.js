@@ -93,8 +93,7 @@ function App() {
                           <PopoverCloseButton />
                           <PopoverBody fontSize={'small'}>
                             Requests that the user share their public encryption key. Returns a public encryption key, or rejects if the user denies the
-                            request. The public key is computed using the NaCl implementation of the
-                            X25519_XSalsa20_Poly1305 algorithm.
+                            request. The public key is computed using the NaCl implementation of the X25519_XSalsa20_Poly1305 algorithm.
                           </PopoverBody>
                         </PopoverContent>
                       </Popover>
@@ -112,22 +111,20 @@ function App() {
                   </GridItem>
                   <GridItem colStart={5} colEnd={6} h="10">
                     <Center>
-                      
                       <Popover isLazy>
                         <PopoverTrigger>
-                        <IconButton variant="ghost" colorScheme="twitter" aria-label="Call Sage" fontSize="20px" icon={<QuestionOutlineIcon />} />    
+                          <IconButton variant="ghost" colorScheme="twitter" aria-label="Call Sage" fontSize="20px" icon={<QuestionOutlineIcon />} />
                         </PopoverTrigger>
                         <PopoverContent>
                           <PopoverHeader fontWeight="semibold">User Directory</PopoverHeader>
                           <PopoverArrow />
                           <PopoverCloseButton />
                           <PopoverBody fontSize={'small'}>
-                       SmartContract directory of usernames and their corresponding wallet address and public encryption key. Click a username to send an encrypted message. 
+                            SmartContract directory of usernames and their corresponding wallet address and public encryption key. Click a username to send an
+                            encrypted message.
                           </PopoverBody>
                         </PopoverContent>
                       </Popover>
-                   
-                   
                     </Center>
                   </GridItem>
                 </Grid>
@@ -141,21 +138,19 @@ function App() {
                   </GridItem>
                   <GridItem colStart={5} colEnd={6} h="10">
                     <Center>
-                    <Popover isLazy>
+                      <Popover isLazy>
                         <PopoverTrigger>
-                      <IconButton variant="ghost" colorScheme="twitter" aria-label="Call Sage" fontSize="20px" icon={<QuestionOutlineIcon />} />
-                      </PopoverTrigger>
+                          <IconButton variant="ghost" colorScheme="twitter" aria-label="Call Sage" fontSize="20px" icon={<QuestionOutlineIcon />} />
+                        </PopoverTrigger>
                         <PopoverContent>
                           <PopoverHeader fontWeight="semibold">Messages</PopoverHeader>
                           <PopoverArrow />
                           <PopoverCloseButton />
                           <PopoverBody fontSize={'small'}>
-                       <Text>All encrypted messages sent to connected account are displayed here.</Text>
+                            <Text>All encrypted messages sent to connected account are displayed here.</Text>
                           </PopoverBody>
                         </PopoverContent>
                       </Popover>
-                   
-                    
                     </Center>
                   </GridItem>
                 </Grid>

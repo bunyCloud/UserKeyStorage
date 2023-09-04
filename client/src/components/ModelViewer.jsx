@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useRef } from 'react'
+import styled from 'styled-components'
 
 const ErrorDiv = styled.div`
   background-color: #ffffffdd;
@@ -16,31 +16,31 @@ const ErrorDiv = styled.div`
     visibility: hidden;
     transition: visibility 2s, opacity 1s 1s;
   }
-`;
+`
 
 function ModelViewer() {
-  const modelViewerRef = useRef(null);
+  const modelViewerRef = useRef(null)
 
   useEffect(() => {
     const handleARStatus = (event) => {
       if (event.detail.status === 'failed') {
-        const error = document.querySelector("#error");
-        error.classList.remove('hide');
+        const error = document.querySelector('#error')
+        error.classList.remove('hide')
 
         error.addEventListener('transitionend', () => {
-          error.classList.add('hide');
-        });
+          error.classList.add('hide')
+        })
       }
-    };
+    }
 
-    modelViewerRef.current.addEventListener('ar-status', handleARStatus);
+    modelViewerRef.current.addEventListener('ar-status', handleARStatus)
 
     // Cleanup to remove the event listener when component unmounts
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      modelViewerRef.current.removeEventListener('ar-status', handleARStatus);
-    };
-  }, []);
+      modelViewerRef.current.removeEventListener('ar-status', handleARStatus)
+    }
+  }, [])
 
   return (
     <>
@@ -50,11 +50,11 @@ function ModelViewer() {
         src="/buny-text.glb"
         ar
         style={{
-                        width: '120px',
-                        height: '120px',
-//marginLeft: '-10px',
-                        backgroundColor: 'transparent',
-                      }}
+          width: '120px',
+          height: '120px',
+          //marginLeft: '-10px',
+          backgroundColor: 'transparent',
+        }}
         ar-modes="scene-viewer webxr"
         //camera-controls
         touch-action="pan-y"
@@ -66,7 +66,7 @@ function ModelViewer() {
         </ErrorDiv>
       </model-viewer>
     </>
-  );
+  )
 }
 
-export default ModelViewer;
+export default ModelViewer

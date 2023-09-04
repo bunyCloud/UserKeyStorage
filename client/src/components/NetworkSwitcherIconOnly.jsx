@@ -1,128 +1,99 @@
 import { useState, useEffect } from 'react';
 import { Button, HStack, Image, Text, Tooltip } from '@chakra-ui/react';
-import {
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItem,
-} from '@chakra-ui/react';
+import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 
 const NetworkSwitcherIconOnly = () => {
   const [selectedNetwork, setSelectedNetwork] = useState('Telos Testnet');
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to keep track of whether the menu is open
-
-  const switchNetwork = async (chainId) => {
+  const [provider, setProvider] = useState('https://testnet.telos.net/evm');
+  
+  const switchNetwork = async (network) => {
     try {
+      const networkData = {
+        'Telos Mainnet': { chainId: 40, rpcUrl: 'https://mainnet.telos.net/evm' },
+        'Telos Testnet': { chainId: 41, rpcUrl: 'https://testnet.telos.net/evm' },
+        'Fuji Testnet': { chainId: 43113, rpcUrl: 'https://api.avax-test.network/ext/bc/C/rpc' },
+        'Avalanche Mainnet': { chainId: 43114, rpcUrl: 'https://api.avax.network/ext/bc/C/rpc' }
+      };
+
+      const { chainId, rpcUrl } = networkData[network];
+      setProvider(rpcUrl);
+
       if (!window.ethereum) {
         throw new Error('Metamask not installed or not accessible.');
       }
       const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
-      if (currentChainId === chainId) {
+      if (parseInt(currentChainId, 16) === chainId) {
         console.log('Already on the desired network.');
         return;
       }
-      const isSupportedNetwork = await window.ethereum.request({
+      await window.ethereum.request({
         method: 'wallet_addEthereumChain',
         params: [
           {
-            chainId: '0x' + chainId.toString(16), // Use the chainId directly here
-            chainName: chainId === 40 ? 'Telos Mainnet' : 'Telos Testnet', // Use the appropriate chain name
+            chainId: '0x' + chainId.toString(16),
+            chainName: network,
             nativeCurrency: {
               name: 'Telos',
               symbol: 'TLOS',
               decimals: 18,
             },
-            rpcUrls: [
-              'https://testnet.telos.net/evm',
-              'https://mainnet.telos.net/evm' // RPC URL for Telos Mainnet (Chain ID 40)
-               // RPC URL for Telos Testnet (Chain ID 41)
-            ],
-            blockExplorerUrls: [
-              'https://testnet.telos.bloks.io/', // Block explorer URL for Telos Mainnet
-              'https://telos.net' // Block explorer URL for Telos Testnet
-            ],
+            rpcUrls: [rpcUrl],
+            blockExplorerUrls: [/* Add the appropriate block explorer URLs based on the network */],
           },
         ],
       });
-  
-      if (!isSupportedNetwork) {
-        throw new Error('The network you are trying to switch to is not supported by Metamask.');
-      }
-  
-      // Switch to the desired network
+
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: '0x' + chainId.toString(16) }], // Use the chainId directly here
+        params: [{ chainId: '0x' + chainId.toString(16) }],
       });
-  
-      console.log('Network switched successfully.');
     } catch (error) {
       console.error('Failed to switch network:', error);
     }
   };
-  
-  const handleMenuOpen = () => {
-    setIsMenuOpen(true);
-  };
-
-  const handleMenuClose = () => {
-    setIsMenuOpen(false);
-  };
-
-  const handleMainnetChange = async () => {
-    setSelectedNetwork('Telos Mainnet');
-  };
-
-  const handleTestnetChange = async () => {
-    setSelectedNetwork('Telos Testnet');
-  };
 
   useEffect(() => {
-    const handleNetworkSwitch = async () => {
-      if (selectedNetwork === 'Telos Mainnet') {
-        await switchNetwork(40);
-      } else if (selectedNetwork === 'Telos Testnet') {
-        await switchNetwork(41);
-      }
-    };
-
-    if (selectedNetwork !== '') {
-      handleNetworkSwitch();
-    }
+    switchNetwork(selectedNetwork);
   }, [selectedNetwork]);
 
   return (
-    <Menu onOpen={handleMenuOpen} onClose={handleMenuClose} >
-
+    <Menu>
       <Tooltip hasArrow label="Switch Network" bg="#c1cfd8" color="black">
-        <MenuButton size={'auto'} bg={'transparent'} as={Button} __css={{ _hover: { boxShadow: 'none' } }}>
+        <MenuButton size={'auto'} bg={'transparent'} as={Button}>
           <HStack>
-          <model-viewer 
-            style={{
-              width: '33px',
-              height: '33px',
-              marginTop: '-3px',
-              backgroundColor: 'transparent',
-            }}
-            src="/telos.glb"
-            poster="/telos.png"
-            shadow-intensity="0.99" 
-            auto-rotate={selectedNetwork === 'Telos Mainnet' ? true : false}
-            shadow-softness="0.57"
-          >
-          </model-viewer>
-          <Text>{selectedNetwork.toString()}</Text>
+            <model-viewer
+              style={{
+                width: '33px',
+                height: '33px',
+                marginTop: '-3px',
+                backgroundColor: 'transparent',
+              }}
+              src="/telos.glb"
+              poster="/telos.png"
+              shadow-intensity="0.99"
+              auto-rotate={selectedNetwork === 'Telos Mainnet' ? true : false}
+              shadow-softness="0.57"
+            ></model-viewer>
+            <Text>{selectedNetwork}</Text>
           </HStack>
         </MenuButton>
       </Tooltip>
       <MenuList zIndex={99999}>
-        <MenuItem minH='48px' onClick={handleTestnetChange} zIndex={99999}>
+        <MenuItem minH='48px' onClick={() => setSelectedNetwork('Telos Testnet')} zIndex={99999}>
           <Image boxSize='2rem' borderRadius='full' src='/telos.png' mr='6px' />
           <Text>Telos Testnet</Text>
         </MenuItem>
-        <MenuItem minH='40px' onClick={handleMainnetChange} zIndex={99999}>
+        <MenuItem minH='48px' onClick={() => setSelectedNetwork('Fuji Testnet')} zIndex={99999}>
+          <Image boxSize='2rem' borderRadius='full' src='/avax.png' mr='6px' />
+          <Text>Fuji Testnet</Text>
+        </MenuItem>
+        <MenuItem minH='40px' onClick={() => setSelectedNetwork('Telos Mainnet')} zIndex={99999}>
           <Image boxSize='2rem' borderRadius='full' src='/telos.png' mr='6px' />
           <Text>Telos Mainnet</Text>
+        </MenuItem>
+        <MenuItem minH='40px' onClick={() => setSelectedNetwork('Avalanche Mainnet')} zIndex={99999}>
+          <Image boxSize='2rem' borderRadius='full' src='/avax.png' mr='6px' />
+          <Text>Avalanche Mainnet</Text>
         </MenuItem>
       </MenuList>
     </Menu>
