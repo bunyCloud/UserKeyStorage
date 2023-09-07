@@ -67,14 +67,16 @@ function UserStorage({ publicKey, account, contractAddress, abi }) {
               View on Explorer
             </Button>
           </HStack>
-          <HStack>
-            <Text>Users:</Text>
-            <Text>{userCount}</Text>
+     <HStack>
+     <HStack gap='auto'>
+            <Text>Total Users: </Text>
+            <Text> ({userCount})</Text>
           </HStack>
-          <HStack>
-            <Text>Messages:</Text>
-            <Text>{msgCount}</Text>
+          <HStack gap='auto'>
+            <Text>Total Messages: </Text>
+            <Text> ({msgCount})</Text>
           </HStack>
+     </HStack>
         </Box>
         {publicKey && (
           <>
