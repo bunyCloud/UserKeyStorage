@@ -4,7 +4,7 @@ import './index.css'
 import { ChakraProvider } from '@chakra-ui/react'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
-import { BrowserRouter } from 'react-router-dom'
+
 import { MetaMaskContextProvider } from './hooks/useMetamask'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
@@ -12,9 +12,7 @@ root.render(
   <React.StrictMode>
     <ChakraProvider>
       <MetaMaskContextProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <App />
       </MetaMaskContextProvider>
     </ChakraProvider>
   </React.StrictMode>,

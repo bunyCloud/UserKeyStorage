@@ -18,7 +18,7 @@ const WhatNFTName = ({ inputAddress, inputTokenId, inputChainId }) => {
   } else if (inputChainId === '41') {
     provider = new ethers.providers.JsonRpcProvider('https://testnet.telos.net/evm')
   } else if (inputChainId === '40') {
-    provider = new ethers.providers.JsonRpcProvider('https://telos.net/evm')
+    provider = new ethers.providers.JsonRpcProvider('https://mainnet.telos.net/evm')
   }
 
   useEffect(() => {

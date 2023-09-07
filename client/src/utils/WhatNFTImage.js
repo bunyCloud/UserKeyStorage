@@ -4,8 +4,7 @@ import axios from 'axios'
 import { Avatar, Box, Center, Text } from '@chakra-ui/react'
 import TheBUNY from '../contracts/fuji/TheBUNY.json'
 import { AppContext } from '../AppContext'
-import loading2 from 'react-useanimations/lib/loading2'
-import UseAnimations from 'react-useanimations'
+
 
 
 const WhatNFTImage = ({size, inputAddress,inputTokenId, inputChainId }) => {
@@ -20,7 +19,7 @@ const WhatNFTImage = ({size, inputAddress,inputTokenId, inputChainId }) => {
   } else if (inputChainId === '41') {
     provider = new ethers.providers.JsonRpcProvider('https://testnet.telos.net/evm')
   } else if (inputChainId === '40') {
-    provider = new ethers.providers.JsonRpcProvider('https://telos.net/evm')
+    provider = new ethers.providers.JsonRpcProvider('https://mainnet.telos.net/evm')
   }
   
   useEffect(() => {
@@ -59,9 +58,7 @@ const WhatNFTImage = ({size, inputAddress,inputTokenId, inputChainId }) => {
 
   if (!nftImage) {
     return <div>
-    <Center>
-    <UseAnimations fillColor='#6a14fc' animation={loading2} size={63} speed={3000} strokeColor='orange' wrapperStyle={{ padding: 1 }} />
-    </Center>
+    
     <Text fontSize={'x-small'} color="#6a14fc">Ready to load..</Text>
 
     </div>
